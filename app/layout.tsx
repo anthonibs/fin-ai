@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Mulish } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+const mulish = Mulish({
+  variable: "--font-mulish",
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -26,7 +26,7 @@ export default function RootLayout({
           baseTheme: dark,
         }}
       >
-        <body className={`${poppins.className} dark antialiased`}>{children}</body>
+        <body className={`${mulish.className} dark antialiased`}>{children}</body>
       </ClerkProvider>
     </html>
   );
