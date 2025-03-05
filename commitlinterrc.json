@@ -1,0 +1,39 @@
+{
+  "lang": "pt-BR",
+  "types": {
+    "feat": true,
+    "build": true,
+    "deps": true,
+    "docs": true,
+    "fix": true,
+    "style": true,
+    "refactor": true,
+    "test": true,
+    "perf": true,
+    "ci": true,
+    "temp": false,
+    "chore": true
+  },
+  "min-len": 10,
+  "max-len": 100,
+
+  "example": "feat: nova funcionalidade",
+
+  "scopeDescriptions": [
+    "Opcional, pode ser qualquer coisa que especifique o local da mudança.",
+    "Por exemplo: $location, $browser, $compile, $rootScope, ngHref, ngClick, ngView, etc.",
+    "No desenvolvimento de apps, o escopo pode ser uma página, módulo ou componente."
+  ],
+
+  "validScopes": ["CHANGELOG", "DOCS"],
+
+  "invalidScopeDescriptions": [
+    "`scope` é opcional, mas se o parênteses existir, ele não pode estar vazio."
+  ],
+
+  "subjectDescriptions": ["Uma descrição curta e direta da mudança, em uma linha."],
+
+  "invalidSubjectDescriptions": ["Não inicie com letra maiúscula.", "Não coloque ponto final."],
+  "showInvalidHeader": true,
+  "debug": true
+}
