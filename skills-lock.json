@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "frontend-code-review": {
+      "source": "langgenius/dify",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/frontend-code-review/SKILL.md",
+      "computedHash": "5fa8544c6e9d7dd37a56147b2e062d073c30a062137e0accb5bb4d16db0ac7c4"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+    }
+  }
+}
