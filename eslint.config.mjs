@@ -1,9 +1,5 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
-
-const __filename = fileURLToPath(import.meta.url);
 
 export default [
   js.configs.recommended,
