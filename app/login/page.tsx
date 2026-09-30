@@ -14,7 +14,7 @@ const LoginPage = async () => {
 
   return (
     <section className="grid h-full w-full grid-cols-2">
-      <div className="m-auto flex max-w-[580px] flex-col justify-center p-8">
+      <div className="m-auto flex max-w-145 flex-col justify-center p-8">
         <Image src="/logo.svg" alt="FinAi" width={176} height={40} className="mb-4" />
 
         <h1 className="mb-3 text-4xl font-bold">Bem-vindo</h1>
