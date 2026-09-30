@@ -1,36 +1,21 @@
 "use client";
 
-import { Transaction, TransactionCategory, TransactionPaymentMethod } from "@prisma/client";
+import { Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import TypeBadge from "../_components/type-badge";
 import { Button } from "@/app/_components/ui/button";
-import { PencilIcon, TrashIcon } from "lucide-react";
+import { TrashIcon } from "lucide-react";
+import {
+  TRANSACTION_CATEGORY_LABEL,
+  TRANSACTION_PAYMENT_METHOD_LABEL,
+} from "@/app/_constants/transactions";
+import EditTransactionButton from "../_components/edit-transaction-button";
 
-const TRANSACTION_CATEGORY_LABEL = {
-  [TransactionCategory.FOOD]: "Alimentação",
-  [TransactionCategory.EDUCATION]: "Educação",
-  [TransactionCategory.ENTERTAINMENT]: "Entretenimento",
-  [TransactionCategory.HEALTH]: "Saúde",
-  [TransactionCategory.HOUSING]: "Moradia",
-  [TransactionCategory.INSURANCE]: "Seguro",
-  [TransactionCategory.OTHER]: "Outros",
-  [TransactionCategory.SALARY]: "Salário",
-  [TransactionCategory.TRANSPORTATION]: "Transporte",
-  [TransactionCategory.UTILITIES]: "Utilidades",
+export type TransactionDTO = Omit<Transaction, "amount"> & {
+  amount: number;
 };
 
-const TRANSACTION_PAYMENT_METHOD_LABEL = {
-  [TransactionPaymentMethod.BANK_SLIP]: "Boleto Bancário",
-  [TransactionPaymentMethod.BANK_TRANSFER]: "Transferência Bancária",
-  [TransactionPaymentMethod.CASH]: "Dinheiro",
-  [TransactionPaymentMethod.CREDIT_CARD]: "Cartão de Crédito",
-  [TransactionPaymentMethod.DEBIT_CARD]: "Cartão de Débito",
-  [TransactionPaymentMethod.OTHER]: "Outro",
-  [TransactionPaymentMethod.PAYPAL]: "PayPal",
-  [TransactionPaymentMethod.PIX]: "Pix",
-};
-
-export const transactionColumns: ColumnDef<Transaction>[] = [
+export const transactionColumns: ColumnDef<TransactionDTO>[] = [
   {
     accessorKey: "name",
     header: "Nome",
@@ -64,22 +49,22 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "amount",
     header: "Valor",
-    cell: ({ row: { original: transaction } }) =>
-      new Intl.NumberFormat("pt-BR", {
+    cell: ({ row: { original: transaction } }) => {
+      const amount = transaction.amount;
+      return new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL",
-      }).format(Number(transaction.amount)),
+      }).format(amount);
+    },
   },
   {
     accessorKey: "actions",
     header: "",
-    cell: () => (
+    cell: ({ row: { original: transaction } }) => (
       <div className="space-x-1">
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
-          <PencilIcon />
-        </Button>
+        <EditTransactionButton transaction={transaction} />
 
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
+        <Button variant="ghost" size="icon" className="text-muted-foreground cursor-pointer">
           <TrashIcon />
         </Button>
       </div>

@@ -7,21 +7,21 @@ const TypeBadge = ({ type }: { type: TransactionType }) => {
     case TransactionType.DEPOSIT:
       return (
         <Badge className="bg-primary/10 text-primary rounded-full font-bold">
-          <CircleIcon className="fill-primary mr-2" size={10} />
+          <CircleIcon className="fill-primary mr-2" size={8} />
           Depósito
         </Badge>
       );
     case TransactionType.EXPENSE:
       return (
         <Badge className="rounded-full bg-red-500/10 font-bold text-red-700">
-          <CircleIcon className="mr-2 fill-red-700" size={10} />
+          <CircleIcon className="mr-2 fill-red-700" />
           Despesas
         </Badge>
       );
     default:
       return (
         <Badge className="rounded-full bg-blue-500/10 font-bold text-blue-700">
-          <CircleIcon className="mr-2 fill-blue-700" size={10} />
+          <CircleIcon className="mr-2 fill-blue-700" />
           Investimentos
         </Badge>
       );
