@@ -1,15 +1,22 @@
-import { PrismaClient } from "@prisma/client";
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@/app/generated/prisma/client";
 
 declare global {
-  var cachedPrisma: PrismaClient;
+  var cachedPrisma: PrismaClient | undefined;
 }
 
 let prisma: PrismaClient;
+
 if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const adapter = new PrismaPg(pool);
+  prisma = new PrismaClient({ adapter });
 } else {
   if (!global.cachedPrisma) {
-    global.cachedPrisma = new PrismaClient();
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    const adapter = new PrismaPg(pool);
+    global.cachedPrisma = new PrismaClient({ adapter });
   }
   prisma = global.cachedPrisma;
 }
