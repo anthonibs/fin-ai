@@ -1,26 +1,41 @@
 import { DataTable } from "../_components/ui/data-table";
 import { db } from "../_lib/prisma";
-import { transactionColumns, TransactionDTO } from "./_columns";
+import { transactionColumns } from "./_columns";
 import AddTransactionButton from "../_components/shared/add-transaction-button";
+import Navbar from "../_components/shared/navbar";
+import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 
 const TransactionsPage = async () => {
-  const transactionsRaw = await db.transaction.findMany();
+  const { userId } = await auth();
 
-  const transactions: TransactionDTO[] = transactionsRaw.map((transaction) => ({
-    ...transaction,
-    amount: Number(transaction.amount),
-  }));
+  if (!userId) {
+    redirect("/login");
+  }
+
+  const transactionsRaw = await db.transaction.findMany({
+    where: {
+      userId: userId,
+    },
+  });
 
   return (
-    <section className="space-y-6 p-6">
-      <header className="flex w-full items-center justify-between">
-        <h1 className="text-2xl font-bold">Transação</h1>
+    <>
+      <Navbar />
 
-        <AddTransactionButton />
-      </header>
+      <section className="space-y-6 p-6">
+        <header className="flex w-full items-center justify-between">
+          <h1 className="text-2xl font-bold">Transações</h1>
 
-      <DataTable columns={transactionColumns} data={JSON.parse(JSON.stringify(transactions))} />
-    </section>
+          <AddTransactionButton />
+        </header>
+
+        <DataTable
+          columns={transactionColumns}
+          data={JSON.parse(JSON.stringify(transactionsRaw))}
+        />
+      </section>
+    </>
   );
 };
 

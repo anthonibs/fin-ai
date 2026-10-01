@@ -25,7 +25,7 @@ const LoginPage = async () => {
         </p>
 
         <SignInButton>
-          <Button variant="secondary" className="rounded-[20px] p-6">
+          <Button variant="secondary" className="cursor-pointer rounded-[20px] p-6">
             <LogInIcon className="mr-2" />
             Fazer o login ou criar conta
           </Button>
