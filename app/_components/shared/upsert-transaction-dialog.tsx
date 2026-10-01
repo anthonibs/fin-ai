@@ -1,6 +1,4 @@
 "use client";
-import { useState } from "react";
-import { ArrowDownUpIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Dialog,
