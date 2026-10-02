@@ -15,4 +15,11 @@ export interface DashboardMetrics {
   balance: number;
   totalTransactionsAmount: number;
   typesPercentage: TransactionTypePercentages;
+  totalExpensesPerCategory: TotalExpensePerCategory[];
+}
+
+export interface TotalExpensePerCategory {
+  category: string;
+  totalAmount: number;
+  percentageOfTotal: number;
 }
