@@ -1,6 +1,17 @@
 import { TransactionCategory, TransactionPaymentMethod, TransactionType } from "@prisma/client";
 
-export const TRANSACTION_CATEGORY_LABEL = {
+export interface SelectOption<T extends string = string> {
+  value: T;
+  label: string;
+}
+
+export const TRANSACTION_TYPE_LABEL: Record<TransactionType, string> = {
+  [TransactionType.EXPENSE]: "Despesa",
+  [TransactionType.DEPOSIT]: "Depósito",
+  [TransactionType.INVESTMENT]: "Investimento",
+};
+
+export const TRANSACTION_CATEGORY_LABEL: Record<TransactionCategory, string> = {
   [TransactionCategory.FOOD]: "Alimentação",
   [TransactionCategory.EDUCATION]: "Educação",
   [TransactionCategory.ENTERTAINMENT]: "Entretenimento",
@@ -12,7 +23,7 @@ export const TRANSACTION_CATEGORY_LABEL = {
   [TransactionCategory.UTILITIES]: "Utilidades",
 };
 
-export const TRANSACTION_PAYMENT_METHOD_LABEL = {
+export const TRANSACTION_PAYMENT_METHOD_LABEL: Record<TransactionPaymentMethod, string> = {
   [TransactionPaymentMethod.BANK_SLIP]: "Boleto Bancário",
   [TransactionPaymentMethod.BANK_TRANSFER]: "Transferência Bancária",
   [TransactionPaymentMethod.CASH]: "Dinheiro",
@@ -22,87 +33,20 @@ export const TRANSACTION_PAYMENT_METHOD_LABEL = {
   [TransactionPaymentMethod.PIX]: "Pix",
 };
 
-export const TRANSACTION_TYPE_OPTIONS = [
-  {
-    value: TransactionType.EXPENSE,
-    label: "Despesa",
-  },
-  {
-    value: TransactionType.DEPOSIT,
-    label: "Depósito",
-  },
-  {
-    value: TransactionType.INVESTMENT,
-    label: "Investimento",
-  },
-];
+const mapLabelRecordToOptions = <T extends string>(
+  record: Record<T, string>
+): SelectOption<T>[] => {
+  return (Object.keys(record) as T[]).map((key) => ({
+    value: key,
+    label: record[key],
+  }));
+};
 
-export const PAYMENT_METHOD_OPTIONS = [
-  {
-    value: TransactionPaymentMethod.BANK_SLIP,
-    label: TRANSACTION_PAYMENT_METHOD_LABEL[TransactionPaymentMethod.BANK_SLIP],
-  },
-  {
-    value: TransactionPaymentMethod.BANK_TRANSFER,
-    label: TRANSACTION_PAYMENT_METHOD_LABEL[TransactionPaymentMethod.BANK_TRANSFER],
-  },
-  {
-    value: TransactionPaymentMethod.CASH,
-    label: TRANSACTION_PAYMENT_METHOD_LABEL[TransactionPaymentMethod.CASH],
-  },
-  {
-    value: TransactionPaymentMethod.CREDIT_CARD,
-    label: TRANSACTION_PAYMENT_METHOD_LABEL[TransactionPaymentMethod.CREDIT_CARD],
-  },
-  {
-    value: TransactionPaymentMethod.DEBIT_CARD,
-    label: TRANSACTION_PAYMENT_METHOD_LABEL[TransactionPaymentMethod.DEBIT_CARD],
-  },
-  {
-    value: TransactionPaymentMethod.OTHER,
-    label: TRANSACTION_PAYMENT_METHOD_LABEL[TransactionPaymentMethod.OTHER],
-  },
-  {
-    value: TransactionPaymentMethod.PIX,
-    label: TRANSACTION_PAYMENT_METHOD_LABEL[TransactionPaymentMethod.PIX],
-  },
-];
+export const TRANSACTION_TYPE_OPTIONS: SelectOption<TransactionType>[] =
+  mapLabelRecordToOptions(TRANSACTION_TYPE_LABEL);
 
-export const TRANSACTION_CATEGORY_OPTIONS = [
-  {
-    value: TransactionCategory.OTHER,
-    label: TRANSACTION_CATEGORY_LABEL[TransactionCategory.OTHER],
-  },
-  {
-    value: TransactionCategory.FOOD,
-    label: TRANSACTION_CATEGORY_LABEL[TransactionCategory.FOOD],
-  },
-  {
-    value: TransactionCategory.ENTERTAINMENT,
-    label: TRANSACTION_CATEGORY_LABEL[TransactionCategory.ENTERTAINMENT],
-  },
-  {
-    value: TransactionCategory.HEALTH,
-    label: TRANSACTION_CATEGORY_LABEL[TransactionCategory.HEALTH],
-  },
-  {
-    value: TransactionCategory.TRANSPORTATION,
-    label: TRANSACTION_CATEGORY_LABEL[TransactionCategory.TRANSPORTATION],
-  },
-  {
-    value: TransactionCategory.UTILITIES,
-    label: TRANSACTION_CATEGORY_LABEL[TransactionCategory.UTILITIES],
-  },
-  {
-    value: TransactionCategory.EDUCATION,
-    label: TRANSACTION_CATEGORY_LABEL[TransactionCategory.EDUCATION],
-  },
-  {
-    value: TransactionCategory.HOUSING,
-    label: TRANSACTION_CATEGORY_LABEL[TransactionCategory.HOUSING],
-  },
-  {
-    value: TransactionCategory.SALARY,
-    label: TRANSACTION_CATEGORY_LABEL[TransactionCategory.SALARY],
-  },
-];
+export const PAYMENT_METHOD_OPTIONS: SelectOption<TransactionPaymentMethod>[] =
+  mapLabelRecordToOptions(TRANSACTION_PAYMENT_METHOD_LABEL);
+
+export const TRANSACTION_CATEGORY_OPTIONS: SelectOption<TransactionCategory>[] =
+  mapLabelRecordToOptions(TRANSACTION_CATEGORY_LABEL);
