@@ -27,7 +27,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
   const monthIsInvalid = !currentMonth || !isMatch(currentMonth, "MM");
 
   if (monthIsInvalid) {
-    return redirect("/?month=01");
+    return redirect(`/?month=${new Date().getMonth() + 1}`);
   }
 
   const dashboardData = await getDashboard({
