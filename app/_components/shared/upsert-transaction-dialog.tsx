@@ -33,7 +33,7 @@ import {
 } from "@/app/_constants/transactions";
 import { DatePicker } from "../ui/date-picker";
 import { upsertTransaction } from "@/app/_actions/upsert-transaction";
-import { TransactionDTO } from "@/app/transactions/_columns";
+import { TransactionDTO } from "@/app/(pages)/transactions/_columns";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, {

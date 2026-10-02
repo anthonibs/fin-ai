@@ -1,0 +1,43 @@
+import { CardContent, CardHeader, CardTitle } from "@/app/_components/ui/card";
+import { Progress } from "@/app/_components/ui/progress";
+import { ScrollArea } from "@/app/_components/ui/scroll-area";
+import { TRANSACTION_CATEGORY_LABEL } from "@/app/_constants/transactions";
+import { TotalExpensePerCategory } from "@/app/modules/dashboard/types/dashboard.types";
+import React from "react";
+
+interface ExpensesPerCategoryProps {
+  expensesPerCategory: TotalExpensePerCategory[];
+}
+
+const ExpensesPerCategory = ({ expensesPerCategory }: ExpensesPerCategoryProps) => {
+  return (
+    <ScrollArea className="h-full rounded-md border">
+      <CardHeader className="py-6">
+        <CardTitle className="font-bold">Gastos por Categoria</CardTitle>
+      </CardHeader>
+
+      <CardContent className="space-y-6">
+        {expensesPerCategory.map((item) => (
+          <div key={item.category} className="space-y-2">
+            <div className="flex w-full justify-between">
+              <p className="text-sm font-bold">
+                {
+                  TRANSACTION_CATEGORY_LABEL[
+                    item.category as keyof typeof TRANSACTION_CATEGORY_LABEL
+                  ]
+                }
+              </p>
+              <p className="text-sm font-bold">
+                {item.totalAmount} ({item.percentageOfTotal}%)
+              </p>
+            </div>
+
+            <Progress value={item.percentageOfTotal} />
+          </div>
+        ))}
+      </CardContent>
+    </ScrollArea>
+  );
+};
+
+export default ExpensesPerCategory;
