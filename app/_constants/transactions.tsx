@@ -1,9 +1,21 @@
 import { TransactionCategory, TransactionPaymentMethod, TransactionType } from "@prisma/client";
+import { Banknote, BanknoteIcon, Diamond, Landmark, CreditCard } from "lucide-react";
+import { ReactNode } from "react";
 
 export interface SelectOption<T extends string = string> {
   value: T;
   label: string;
 }
+
+export const TRANSACTION_PAYMENT_METHOD_ICONS: Record<TransactionPaymentMethod, ReactNode> = {
+  [TransactionPaymentMethod.BANK_SLIP]: <Landmark />,
+  [TransactionPaymentMethod.BANK_TRANSFER]: <BanknoteIcon />,
+  [TransactionPaymentMethod.CASH]: <Banknote />,
+  [TransactionPaymentMethod.CREDIT_CARD]: <CreditCard />,
+  [TransactionPaymentMethod.DEBIT_CARD]: <Diamond />,
+  [TransactionPaymentMethod.OTHER]: <BanknoteIcon />,
+  [TransactionPaymentMethod.PIX]: <Diamond />,
+};
 
 export const TRANSACTION_TYPE_LABEL: Record<TransactionType, string> = {
   [TransactionType.EXPENSE]: "Despesa",
