@@ -27,7 +27,9 @@ export default function RootLayout({
           baseTheme: dark,
         }}
       >
-        <body className={`${mulish.className} dark antialiased`}>{children}</body>
+        <body className={`${mulish.className} dark antialiased`}>
+          <div className="h-screen overflow-hidden">{children}</div>
+        </body>
       </ClerkProvider>
     </html>
   );

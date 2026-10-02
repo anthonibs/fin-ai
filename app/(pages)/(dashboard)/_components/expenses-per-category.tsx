@@ -10,7 +10,7 @@ interface ExpensesPerCategoryProps {
 
 const ExpensesPerCategory = ({ expensesPerCategory }: ExpensesPerCategoryProps) => {
   return (
-    <ScrollArea className="col-span-2 h-full rounded-xl border">
+    <ScrollArea className="col-span-2 h-full overflow-auto rounded-xl border">
       <CardHeader className="py-6">
         <CardTitle className="font-bold">Gastos por Categoria</CardTitle>
       </CardHeader>
@@ -26,9 +26,7 @@ const ExpensesPerCategory = ({ expensesPerCategory }: ExpensesPerCategoryProps) 
                   ]
                 }
               </p>
-              <p className="text-sm font-bold">
-                {item.totalAmount} ({item.percentageOfTotal}%)
-              </p>
+              <p className="text-sm font-bold">{item.percentageOfTotal}%</p>
             </div>
 
             <Progress value={item.percentageOfTotal} />

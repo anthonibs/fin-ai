@@ -48,9 +48,9 @@ const TransactionsPierChart = ({
   ];
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex h-full flex-col p-6">
       <CardContent className="flex-1 pb-0">
-        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-62.5">
+        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-52">
           <PieChart>
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
             <Pie data={chartData} dataKey="amount" nameKey="type" innerRadius={60} />
