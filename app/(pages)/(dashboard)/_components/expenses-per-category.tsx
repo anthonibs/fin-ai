@@ -3,7 +3,6 @@ import { Progress } from "@/app/_components/ui/progress";
 import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { TRANSACTION_CATEGORY_LABEL } from "@/app/_constants/transactions";
 import { TotalExpensePerCategory } from "@/app/modules/dashboard/types/dashboard.types";
-import React from "react";
 
 interface ExpensesPerCategoryProps {
   expensesPerCategory: TotalExpensePerCategory[];
@@ -11,7 +10,7 @@ interface ExpensesPerCategoryProps {
 
 const ExpensesPerCategory = ({ expensesPerCategory }: ExpensesPerCategoryProps) => {
   return (
-    <ScrollArea className="h-full rounded-md border">
+    <ScrollArea className="col-span-2 h-full rounded-xl border">
       <CardHeader className="py-6">
         <CardTitle className="font-bold">Gastos por Categoria</CardTitle>
       </CardHeader>

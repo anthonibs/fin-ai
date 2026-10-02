@@ -5,7 +5,7 @@ import Navbar from "@/app/_components/shared/navbar";
 import TimeSelect from "./_components/time-select";
 import { isMatch } from "date-fns";
 import { getDashboard } from "@/app/_actions/get-dashboard";
-import ExpensesPerCategory from "./_components/expenses-per-category";
+import LastTransactions from "./_components/last-transactions";
 
 const DashboardPage = async ({ searchParams }: { searchParams: { month: string } }) => {
   const { userId } = await auth();
@@ -34,8 +34,11 @@ const DashboardPage = async ({ searchParams }: { searchParams: { month: string }
         </div>
 
         <div className="grid grid-cols-[2fr_1fr] justify-between gap-6">
-          <SummaryCards {...dashboardData} />
-          <ExpensesPerCategory expensesPerCategory={dashboardData.totalExpensesPerCategory} />
+          <div className="flex flex-col gap-6">
+            <SummaryCards {...dashboardData} />
+          </div>
+
+          <LastTransactions lastTransactions={dashboardData.lastTransactions} />
         </div>
       </div>
     </>

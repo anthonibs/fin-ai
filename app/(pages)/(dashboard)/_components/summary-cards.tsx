@@ -1,7 +1,11 @@
 import { PiggyBankIcon, WalletIcon, TrendingUpIcon, TrendingDownIcon } from "lucide-react";
 import SummaryCard from "./summary-card";
 import TransactionsPierChart from "./transactions-pier-chart";
-import { TransactionTypePercentages } from "@/app/modules/dashboard/types/dashboard.types";
+import {
+  TotalExpensePerCategory,
+  TransactionTypePercentages,
+} from "@/app/modules/dashboard/types/dashboard.types";
+import ExpensesPerCategory from "./expenses-per-category";
 
 type SummaryCardsProps = {
   balance: number;
@@ -10,6 +14,7 @@ type SummaryCardsProps = {
   expensesTotal: number;
   totalTransactionsAmount: number;
   typesPercentage: TransactionTypePercentages;
+  totalExpensesPerCategory: TotalExpensePerCategory[];
 };
 
 const SummaryCards = async ({
@@ -18,6 +23,7 @@ const SummaryCards = async ({
   investmentsTotal,
   expensesTotal,
   typesPercentage,
+  totalExpensesPerCategory,
 }: SummaryCardsProps) => {
   return (
     <div className="space-y-6">
@@ -49,6 +55,8 @@ const SummaryCards = async ({
           expensesTotal={expensesTotal}
           typesPercentage={typesPercentage}
         />
+
+        <ExpensesPerCategory expensesPerCategory={totalExpensesPerCategory} />
       </div>
     </div>
   );
