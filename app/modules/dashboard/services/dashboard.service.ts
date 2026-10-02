@@ -1,4 +1,4 @@
-import { PrismaClient, TransactionCategory, TransactionType } from "@prisma/client";
+import { PrismaClient, Transaction, TransactionCategory, TransactionType } from "@prisma/client";
 import {
   DashboardMetrics,
   GetDashboardParams,
@@ -36,6 +36,13 @@ export class DashboardService {
       this.fetchAggregatesByCategory(userId, startDate, endDate),
     ]);
 
+    const lastTransactions = await this.fetchAggregatesLastTransactions(
+      userId,
+      startDate,
+      endDate,
+      10
+    );
+
     const { depositsTotal, investmentsTotal, expensesTotal, totalTransactionsAmount, balance } =
       this.calculateTypeTotals(aggregatesByType);
 
@@ -59,6 +66,7 @@ export class DashboardService {
       totalTransactionsAmount,
       typesPercentage,
       totalExpensesPerCategory,
+      lastTransactions,
     };
   }
 
@@ -113,6 +121,27 @@ export class DashboardService {
         amount: Number(group._sum.amount) || 0,
       },
     }));
+  }
+
+  private fetchAggregatesLastTransactions(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+    limit: number
+  ): Promise<Transaction[]> {
+    return this.db.transaction.findMany({
+      where: {
+        userId,
+        date: {
+          gte: startDate,
+          lt: endDate,
+        },
+      },
+      orderBy: {
+        date: "desc",
+      },
+      take: limit,
+    });
   }
 
   private calculateTypeTotals(aggregates: GroupByTypeResult[]): {

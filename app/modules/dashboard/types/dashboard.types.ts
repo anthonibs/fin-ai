@@ -1,4 +1,4 @@
-import { TransactionType } from "@prisma/client";
+import { Transaction, TransactionType } from "@prisma/client";
 
 export interface GetDashboardParams {
   userId: string;
@@ -16,6 +16,7 @@ export interface DashboardMetrics {
   totalTransactionsAmount: number;
   typesPercentage: TransactionTypePercentages;
   totalExpensesPerCategory: TotalExpensePerCategory[];
+  lastTransactions: Transaction[];
 }
 
 export interface TotalExpensePerCategory {
