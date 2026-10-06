@@ -9,6 +9,7 @@ import LastTransactions from "./_components/last-transactions";
 import TransactionsPierChart from "./_components/transactions-pier-chart";
 import ExpensesPerCategory from "./_components/expenses-per-category";
 import { canUserAddTransaction } from "@/app/_actions/get-transaction";
+import AiReportButton from "./_components/ai-report-button";
 
 type DashboardPageProps = {
   searchParams: Promise<{
@@ -41,10 +42,14 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
     <div className="bg-background flex h-screen flex-col overflow-hidden">
       <Navbar />
 
-      <main className="flex flex-1 flex-col space-y-6 overflow-hidden p-6">
+      <section className="flex flex-1 flex-col space-y-6 overflow-hidden p-6">
         <header className="flex items-center justify-between">
           <h1 className="text-foreground text-2xl font-bold tracking-tight">Dashboard</h1>
-          <TimeSelect />
+
+          <div className="flex gap-3">
+            <AiReportButton month={currentMonth} hasPremiumPlan={userCanAddTransaction} />
+            <TimeSelect />
+          </div>
         </header>
 
         <section
@@ -74,7 +79,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
             <LastTransactions lastTransactions={dashboardData.lastTransactions} />
           </aside>
         </section>
-      </main>
+      </section>
     </div>
   );
 };
