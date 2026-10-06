@@ -9,5 +9,3 @@ export const getDashboard = async (params: GetDashboardParams): Promise<Dashboar
   const service = new DashboardService(db);
   return service.execute(params);
 };
-
-export default getDashboard;
