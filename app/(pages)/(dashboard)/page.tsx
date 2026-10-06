@@ -8,6 +8,7 @@ import TimeSelect from "./_components/time-select";
 import LastTransactions from "./_components/last-transactions";
 import TransactionsPierChart from "./_components/transactions-pier-chart";
 import ExpensesPerCategory from "./_components/expenses-per-category";
+import { canUserAddTransaction } from "@/app/_actions/get-transaction";
 
 type DashboardPageProps = {
   searchParams: Promise<{
@@ -34,6 +35,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
     month: currentMonth,
     userId,
   });
+  const userCanAddTransaction = await canUserAddTransaction();
 
   return (
     <div className="bg-background flex h-screen flex-col overflow-hidden">
@@ -50,7 +52,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
           className="grid flex-1 grid-cols-1 gap-6 overflow-hidden lg:grid-cols-[2fr_1fr]"
         >
           <div className="flex flex-col gap-6 overflow-hidden">
-            <SummaryCards {...dashboardData} />
+            <SummaryCards {...dashboardData} userCanAddTransaction={!userCanAddTransaction} />
 
             <div className="grid h-full grid-cols-1 gap-6 overflow-hidden pr-1 md:grid-cols-3">
               <div className="h-full md:col-span-1">

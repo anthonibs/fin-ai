@@ -6,7 +6,7 @@ type SummaryCardsProps = {
   depositsTotal: number;
   investmentsTotal: number;
   expensesTotal: number;
-  totalTransactionsAmount: number;
+  userCanAddTransaction?: boolean;
 };
 
 const SummaryCards = async ({
@@ -14,10 +14,17 @@ const SummaryCards = async ({
   depositsTotal,
   investmentsTotal,
   expensesTotal,
+  userCanAddTransaction,
 }: SummaryCardsProps) => {
   return (
     <div className="space-y-6">
-      <SummaryCard title="Saldo" amount={balance} size="large" icon={<WalletIcon size={16} />} />
+      <SummaryCard
+        title="Saldo"
+        amount={balance}
+        userCanAddTransaction={userCanAddTransaction}
+        size="large"
+        icon={<WalletIcon size={16} />}
+      />
 
       <div className="grid grid-cols-3 gap-6">
         <SummaryCard

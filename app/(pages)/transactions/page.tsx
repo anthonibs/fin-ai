@@ -5,6 +5,7 @@ import Navbar from "@/app/_components/shared/navbar";
 import AddTransactionButton from "@/app/_components/shared/add-transaction-button";
 import { DataTable } from "@/app/_components/ui/data-table";
 import { db } from "@/app/_lib/prisma";
+import { canUserAddTransaction } from "@/app/_actions/get-transaction";
 
 const TransactionsPage = async () => {
   const { userId } = await auth();
@@ -19,6 +20,8 @@ const TransactionsPage = async () => {
     },
   });
 
+  const userCanAddTransaction = await canUserAddTransaction();
+
   return (
     <>
       <Navbar />
@@ -27,7 +30,7 @@ const TransactionsPage = async () => {
         <header className="flex w-full items-center justify-between">
           <h1 className="text-2xl font-bold">Transações</h1>
 
-          <AddTransactionButton />
+          <AddTransactionButton userCanAddTransaction={!userCanAddTransaction} />
         </header>
 
         <DataTable
