@@ -1,44 +1,29 @@
-import AddTransactionButton from "@/app/_components/shared/add-transaction-button";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 
 type SummaryCardProps = {
   title: string;
   amount: number;
   icon: React.ReactNode;
-  size?: "small" | "large";
-  userCanAddTransaction?: boolean;
+  label?: string;
+  valueColor?: string;
 };
 
-const SummaryCard = ({
-  title,
-  amount,
-  icon,
-  size = "small",
-  userCanAddTransaction,
-}: SummaryCardProps) => {
+const SummaryCard = ({ title, amount, icon, label, valueColor }: SummaryCardProps) => {
   return (
-    <Card className={size === "large" ? "border-white/5 bg-white/5" : ""}>
+    <Card className="bg-background-muted border-card-foreground/5 p-4">
       <CardHeader className="flex flex-row items-center gap-2">
         {icon}
-        <p
-          className={
-            size === "large"
-              ? "text-xl text-white opacity-75"
-              : "text-muted-foreground text-sm font-bold"
-          }
-        >
-          {title}
-        </p>
+        <p className={"text-muted-foreground text-sm font-bold"}>{title}</p>
       </CardHeader>
 
-      <CardContent className="flex justify-between">
-        <p className={size === "large" ? "text-4xl font-bold" : "text-2xl font-bold"}>
+      <CardContent className="flex flex-col justify-between">
+        <p className={`text-2xl font-extrabold ${valueColor ?? ""}`}>
           {Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
             Number(amount)
           )}
         </p>
 
-        {size === "large" && <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />}
+        <span className="text-muted-foreground text-xs">{label}</span>
       </CardContent>
     </Card>
   );

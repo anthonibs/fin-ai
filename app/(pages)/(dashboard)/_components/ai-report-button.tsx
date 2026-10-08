@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BotIcon, Loader2Icon } from "lucide-react";
+import { Loader2Icon, Sparkles } from "lucide-react";
 import { AiReportMarkdown } from "./ai-report";
 import { generateAiReport } from "../_actions/generate-ai-report";
 
@@ -56,19 +56,19 @@ export const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) =
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <BotIcon className="h-4 w-4" />
+        <Button variant="outline" className="bg-background-muted gap-2 rounded-md">
+          <Sparkles className="h-4 w-4 text-emerald-500" />
           Relatório IA
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-162.5">
+      <DialogContent className="bg-background-muted max-w-162">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <BotIcon className="text-primary h-5 w-5" />
+          <DialogTitle className="mb-2 flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-emerald-500" />
             Relatório de Finanças com IA
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-muted-foreground">
             {hasPremiumPlan
               ? "Gere uma análise detalhada dos seus gastos e receba dicas personalizadas para o mês selecionado."
               : "Você precisa de um plano Premium ativo para gerar relatórios financeiros inteligentes."}
@@ -79,7 +79,8 @@ export const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) =
           <ScrollArea className="max-h-120 pr-3">
             {isLoading && (
               <div className="text-muted-foreground flex flex-col items-center justify-center gap-3 py-16 text-center">
-                <Loader2Icon className="text-primary h-8 w-8 animate-spin" />
+                <Loader2Icon className="h-8 w-8 animate-spin text-emerald-500" />
+
                 <p className="text-sm font-medium">
                   Analisando suas transações e elaborando seus insights...
                 </p>
@@ -111,7 +112,9 @@ export const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) =
           {!hasPremiumPlan ? (
             <>
               <DialogClose asChild>
-                <Button variant="ghost">Voltar</Button>
+                <Button variant="ghost" className="text-muted-foreground">
+                  Voltar
+                </Button>
               </DialogClose>
               <Button asChild>
                 <Link href="/subscription">Conhecer o Plano Premium</Link>
@@ -119,16 +122,23 @@ export const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) =
             </>
           ) : report ? (
             <DialogClose asChild>
-              <Button variant="outline">Fechar</Button>
+              <Button variant="outline" className="text-muted-foreground">
+                Fechar
+              </Button>
             </DialogClose>
           ) : (
             <>
               <DialogClose asChild>
-                <Button variant="ghost" disabled={isLoading}>
+                <Button variant="ghost" className="text-muted-foreground mr-2" disabled={isLoading}>
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button onClick={handleGenerateReport} disabled={isLoading} className="gap-2">
+
+              <Button
+                onClick={handleGenerateReport}
+                disabled={isLoading}
+                className="text-foreground gap-2 bg-emerald-500 duration-200 hover:bg-emerald-600"
+              >
                 {isLoading && <Loader2Icon className="h-4 w-4 animate-spin" />}
                 {isLoading ? "Gerando..." : "Gerar Relatório"}
               </Button>

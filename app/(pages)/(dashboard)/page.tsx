@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { isMatch } from "date-fns";
-import Navbar from "@/app/_components/shared/navbar";
 import { getDashboard } from "@/app/_actions/get-dashboard";
 import SummaryCards from "./_components/summary-cards";
 import TimeSelect from "./_components/time-select";
@@ -10,6 +9,7 @@ import TransactionsPierChart from "./_components/transactions-pier-chart";
 import ExpensesPerCategory from "./_components/expenses-per-category";
 import { canUserAddTransaction } from "@/app/_actions/get-transaction";
 import AiReportButton from "./_components/ai-report-button";
+import AddTransactionButton from "@/app/_components/shared/add-transaction-button";
 
 type DashboardPageProps = {
   searchParams: Promise<{
@@ -39,16 +39,23 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
   const userCanAddTransaction = await canUserAddTransaction();
 
   return (
-    <div className="bg-background flex h-screen flex-col overflow-hidden">
-      <Navbar />
-
-      <section className="flex flex-1 flex-col space-y-6 overflow-hidden p-6">
+    <div className="flex h-full flex-col">
+      <section className="flex flex-1 flex-col space-y-6 overflow-hidden">
         <header className="flex items-center justify-between">
-          <h1 className="text-foreground text-2xl font-bold tracking-tight">Dashboard</h1>
+          <div>
+            <h1 className="text-foreground text-2xl font-bold tracking-tight">
+              Dashboard Financeiro
+            </h1>
+
+            <p className="text-foreground/80">
+              Visão consolidada das suas finanças e movimentações.
+            </p>
+          </div>
 
           <div className="flex gap-3">
-            <AiReportButton month={currentMonth} hasPremiumPlan={userCanAddTransaction} />
             <TimeSelect />
+            <AiReportButton month={currentMonth} hasPremiumPlan={userCanAddTransaction} />
+            <AddTransactionButton userCanAddTransaction={!userCanAddTransaction} />
           </div>
         </header>
 
@@ -57,7 +64,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
           className="grid flex-1 grid-cols-1 gap-6 overflow-hidden lg:grid-cols-[2fr_1fr]"
         >
           <div className="flex flex-col gap-6 overflow-hidden">
-            <SummaryCards {...dashboardData} userCanAddTransaction={!userCanAddTransaction} />
+            <SummaryCards {...dashboardData} />
 
             <div className="grid h-full grid-cols-1 gap-6 overflow-hidden pr-1 md:grid-cols-3">
               <div className="h-full md:col-span-1">

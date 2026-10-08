@@ -8,40 +8,62 @@ import {
   SelectValue,
 } from "@/app/_components/ui/select";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo } from "react";
 
-const MONTHS_OPTIONS = [
-  { label: "Janeiro", value: "01" },
-  { label: "Fevereiro", value: "02" },
-  { label: "Março", value: "03" },
-  { label: "Abril", value: "04" },
-  { label: "Maio", value: "05" },
-  { label: "Junho", value: "06" },
-  { label: "Julho", value: "07" },
-  { label: "Agosto", value: "08" },
-  { label: "Setembro", value: "09" },
-  { label: "Outubro", value: "10" },
-  { label: "Novembro", value: "11" },
-  { label: "Dezembro", value: "12" },
+const MONTH_NAMES = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
 ];
 
 const TimeSelect = () => {
   const { push } = useRouter();
   const searchParams = useSearchParams();
-  const month = searchParams.get("month");
+  const currentMonthParam = searchParams.get("month");
+
+  const availableMonths = useMemo(() => {
+    const currentDate = new Date();
+    const options = [];
+
+    for (let i = 0; i < 4; i++) {
+      const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+
+      const year = targetDate.getFullYear();
+      const monthIndex = targetDate.getMonth();
+      const monthNumber = String(monthIndex + 1).padStart(2, "0");
+
+      options.push({
+        label: `${MONTH_NAMES[monthIndex]} de ${year}`,
+        value: monthNumber,
+      });
+    }
+
+    return options;
+  }, []);
+
   const handleMonthChange = (value: string) => {
     push(`?month=${value}`);
   };
 
   return (
-    <Select onValueChange={handleMonthChange} value={month ?? ""}>
-      <SelectTrigger className="w-40 rounded-full border">
+    <Select onValueChange={handleMonthChange} value={currentMonthParam ?? ""}>
+      <SelectTrigger className="w-48 rounded-md border">
         <SelectValue placeholder="Selecione um mês" />
       </SelectTrigger>
 
       <SelectContent className="bg-background">
-        {MONTHS_OPTIONS.map((month) => (
-          <SelectItem key={month.value} value={month.value}>
-            {month.label}
+        {availableMonths.map((item) => (
+          <SelectItem key={item.value} value={item.value}>
+            {item.label}
           </SelectItem>
         ))}
       </SelectContent>

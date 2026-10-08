@@ -4,6 +4,7 @@ import { db } from "@/app/_lib/prisma";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { OpenAI } from "openai";
 import { generateAiReportSchema } from "./schema";
+import { TRANSACTION_TYPE_LABEL, TRANSACTION_CATEGORY_LABEL } from "@/app/_constants/transactions";
 
 export const generateAiReport = async ({ month }: { month: string }): Promise<string> => {
   generateAiReportSchema.parse({ month });
@@ -49,7 +50,10 @@ export const generateAiReport = async ({ month }: { month: string }): Promise<st
   }
 
   const transactionsString = transactions
-    .map((t) => `${t.date.toLocaleDateString("pt-BR")}-${t.type}-R$${t.amount}-${t.category}`)
+    .map(
+      (t) =>
+        `${t.date.toLocaleDateString("pt-BR")}-${TRANSACTION_TYPE_LABEL[t.type]}-R$${t.amount}-${TRANSACTION_CATEGORY_LABEL[t.category]}`
+    )
     .join("; ");
 
   const completion = await client.chat.completions.create({
