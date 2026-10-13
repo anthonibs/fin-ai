@@ -1,12 +1,19 @@
-import { Transaction, TransactionType } from "@prisma/client";
+import { Transaction, TransactionCategory, TransactionType } from "@prisma/client";
+
+export type TransactionTypePercentages = Record<TransactionType, number>;
+
+export interface TotalExpensePerCategory {
+  category: TransactionCategory;
+  totalAmount: number;
+  percentageOfTotal: number;
+}
 
 export interface GetDashboardParams {
   userId: string;
   month: string;
   year?: string;
+  expenseBudgetLimitPercent?: number;
 }
-
-export type TransactionTypePercentages = Record<TransactionType, number>;
 
 export interface DashboardMetrics {
   depositsTotal: number;
@@ -17,10 +24,5 @@ export interface DashboardMetrics {
   typesPercentage: TransactionTypePercentages;
   totalExpensesPerCategory: TotalExpensePerCategory[];
   lastTransactions: Transaction[];
-}
-
-export interface TotalExpensePerCategory {
-  category: string;
-  totalAmount: number;
-  percentageOfTotal: number;
+  isExpenseWithinBudget: boolean;
 }

@@ -25,23 +25,30 @@ interface GroupByCategoryResult {
   };
 }
 
+interface CalculatedTotals {
+  depositsTotal: number;
+  investmentsTotal: number;
+  expensesTotal: number;
+  totalTransactionsAmount: number;
+  balance: number;
+}
+
 export class DashboardService {
   constructor(private readonly db: PrismaClient) {}
 
-  public async execute({ userId, month, year }: GetDashboardParams): Promise<DashboardMetrics> {
+  public async execute({
+    userId,
+    month,
+    year,
+    expenseBudgetLimitPercent = 50,
+  }: GetDashboardParams): Promise<DashboardMetrics> {
     const { startDate, endDate } = this.resolveDateRange(month, year);
 
-    const [aggregatesByType, aggregatesByCategory] = await Promise.all([
+    const [aggregatesByType, aggregatesByCategory, lastTransactions] = await Promise.all([
       this.fetchAggregatesByType(userId, startDate, endDate),
       this.fetchAggregatesByCategory(userId, startDate, endDate),
+      this.fetchAggregatesLastTransactions(userId, startDate, endDate, 10),
     ]);
-
-    const lastTransactions = await this.fetchAggregatesLastTransactions(
-      userId,
-      startDate,
-      endDate,
-      10
-    );
 
     const { depositsTotal, investmentsTotal, expensesTotal, totalTransactionsAmount, balance } =
       this.calculateTypeTotals(aggregatesByType);
@@ -49,14 +56,18 @@ export class DashboardService {
     const typesPercentage = this.calculateTypePercentages(
       depositsTotal,
       investmentsTotal,
-      expensesTotal,
-      totalTransactionsAmount
+      expensesTotal
     );
 
     const totalExpensesPerCategory = this.buildExpensesByCategory(
       aggregatesByCategory,
       expensesTotal
     );
+
+    const isExpenseWithinBudget =
+      depositsTotal > 0
+        ? typesPercentage[TransactionType.EXPENSE] <= expenseBudgetLimitPercent
+        : expensesTotal === 0;
 
     return {
       depositsTotal,
@@ -67,6 +78,7 @@ export class DashboardService {
       typesPercentage,
       totalExpensesPerCategory,
       lastTransactions,
+      isExpenseWithinBudget,
     };
   }
 
@@ -88,6 +100,7 @@ export class DashboardService {
         amount: true,
       },
     });
+
     return aggregates.map((group) => ({
       type: group.type,
       _sum: {
@@ -115,6 +128,7 @@ export class DashboardService {
         amount: true,
       },
     });
+
     return aggregates.map((group) => ({
       category: group.category,
       _sum: {
@@ -144,13 +158,7 @@ export class DashboardService {
     });
   }
 
-  private calculateTypeTotals(aggregates: GroupByTypeResult[]): {
-    depositsTotal: number;
-    investmentsTotal: number;
-    expensesTotal: number;
-    totalTransactionsAmount: number;
-    balance: number;
-  } {
+  private calculateTypeTotals(aggregates: GroupByTypeResult[]): CalculatedTotals {
     const totalsMap: Record<TransactionType, number> = {
       [TransactionType.DEPOSIT]: 0,
       [TransactionType.INVESTMENT]: 0,
@@ -180,16 +188,12 @@ export class DashboardService {
   private calculateTypePercentages(
     depositsTotal: number,
     investmentsTotal: number,
-    expensesTotal: number,
-    totalTransactionsAmount: number
+    expensesTotal: number
   ): TransactionTypePercentages {
     return {
-      [TransactionType.DEPOSIT]: this.calculatePercentage(depositsTotal, totalTransactionsAmount),
-      [TransactionType.INVESTMENT]: this.calculatePercentage(
-        investmentsTotal,
-        totalTransactionsAmount
-      ),
-      [TransactionType.EXPENSE]: this.calculatePercentage(expensesTotal, totalTransactionsAmount),
+      [TransactionType.DEPOSIT]: depositsTotal > 0 ? 100 : 0,
+      [TransactionType.INVESTMENT]: this.calculatePercentage(investmentsTotal, depositsTotal),
+      [TransactionType.EXPENSE]: this.calculatePercentage(expensesTotal, depositsTotal),
     };
   }
 
@@ -227,6 +231,6 @@ export class DashboardService {
 
   private calculatePercentage(amount: number, total: number): number {
     if (total <= 0) return 0;
-    return Math.round((amount / total) * 100);
+    return Number(((amount / total) * 100).toFixed(1));
   }
 }
