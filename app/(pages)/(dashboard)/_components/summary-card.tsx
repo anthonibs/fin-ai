@@ -1,19 +1,24 @@
+import { memo } from "react";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 
 type SummaryCardProps = {
   title: string;
   amount: number;
   icon: React.ReactNode;
-  label?: string;
   valueColor?: string;
+  labelProps?: {
+    className?: string;
+    label?: string;
+    labelColor?: string;
+  };
 };
 
-const SummaryCard = ({ title, amount, icon, label, valueColor }: SummaryCardProps) => {
+const SummaryCard = ({ title, amount, icon, valueColor, labelProps }: SummaryCardProps) => {
   return (
-    <Card className="bg-background-muted border-card-foreground/5 p-4">
-      <CardHeader className="flex flex-row items-center gap-2">
+    <Card className="gap-3">
+      <CardHeader className="text-muted-foreground flex flex-row items-center gap-2">
         {icon}
-        <p className={"text-muted-foreground text-sm font-bold"}>{title}</p>
+        <p className={"text-sm font-bold"}>{title}</p>
       </CardHeader>
 
       <CardContent className="flex flex-col justify-between">
@@ -23,10 +28,10 @@ const SummaryCard = ({ title, amount, icon, label, valueColor }: SummaryCardProp
           )}
         </p>
 
-        <span className="text-muted-foreground text-xs">{label}</span>
+        <p className={`mt-0.5 text-xs ${labelProps?.labelColor ?? ""}`}>{labelProps?.label}</p>
       </CardContent>
     </Card>
   );
 };
 
-export default SummaryCard;
+export default memo(SummaryCard);

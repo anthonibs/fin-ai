@@ -17,7 +17,7 @@ const SummaryMainCard = ({ title, amount, icon }: SummaryCardProps) => {
         <p>{title}</p>
       </CardHeader>
 
-      <Badge className="absolute top-8 right-8 inline-flex items-center rounded-full border-emerald-500/30 bg-emerald-500/20 px-3 py-1 text-xs font-bold text-emerald-300">
+      <Badge className="absolute top-8 right-8 inline-flex items-center rounded-full border border-emerald-500/24 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
         Conta Principal
       </Badge>
 
