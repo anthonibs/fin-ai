@@ -33,7 +33,7 @@ export default function RootLayout({
           <Header />
 
           <TooltipProvider delayDuration={200}>
-            <main className="container mx-auto h-[calc(100vh-64px)] py-6">{children}</main>
+            <main className="container mx-auto -my-2 h-[calc(100vh-60px)] py-6">{children}</main>
           </TooltipProvider>
         </body>
       </ClerkProvider>
