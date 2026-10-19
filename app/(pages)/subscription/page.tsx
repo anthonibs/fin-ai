@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { clerkClient } from "@clerk/nextjs/server";
-import Navbar from "@/app/_layout/header/header";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 import { CheckIcon, XIcon } from "lucide-react";
 import AcquirePlanButton from "./_components/acquire-plan-button";
