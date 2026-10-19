@@ -14,6 +14,7 @@ const InputMaskMoney = forwardRef(
         allowNegative={false}
         customInput={Input}
         getInputRef={ref}
+        className="font-bold"
       />
     );
   }

@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -8,7 +9,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
 import { Field, FieldContent, FieldError, FieldLabel } from "../ui/field";
 
@@ -34,6 +34,31 @@ import {
 import { DatePicker } from "../ui/date-picker";
 import { upsertTransaction } from "@/app/_actions/upsert-transaction";
 import { TransactionDTO } from "@/app/(pages)/transactions/_columns";
+import { PlusIcon } from "lucide-react";
+
+const TRANSACTION_STYLES: Record<
+  string,
+  { activeBg: string; activeBorder: string; activeText: string; dot: string }
+> = {
+  DEPOSIT: {
+    activeBg: "bg-emerald-500/12",
+    activeBorder: "border-emerald-500/50",
+    activeText: "text-emerald-500",
+    dot: "bg-emerald-500",
+  },
+  EXPENSE: {
+    activeBg: "bg-rose-500/12",
+    activeBorder: "border-rose-500/50",
+    activeText: "text-rose-500",
+    dot: "bg-rose-500",
+  },
+  INVESTMENT: {
+    activeBg: "bg-blue-500/12",
+    activeBorder: "border-blue-500/50",
+    activeText: "text-blue-500",
+    dot: "bg-blue-500",
+  },
+};
 
 const formSchema = z.object({
   name: z.string().trim().min(1, {
@@ -106,25 +131,85 @@ const UpsertTransactionDialog = ({
         }
       }}
     >
-      <DialogTrigger asChild></DialogTrigger>
-
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+      <DialogContent className="bg-background-muted p-0 sm:max-w-lg">
+        <DialogHeader className="border-b p-5">
           <DialogTitle>{isUpdate ? "Editar" : "Adicionar"} Transação</DialogTitle>
-          <DialogDescription>
-            Insira os detalhes da transação que deseja {isUpdate ? "editar" : "adicionar"}.
+          <DialogDescription className="text-muted-foreground text-sm">
+            Insira as informações abaixo para registrar um novo lançamento ou editar um existente.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8 px-5">
+          <Controller
+            name="type"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field className="w-full">
+                <FieldContent className="w-full">
+                  <FieldLabel id="label-transaction-type" className="text-xs font-bold uppercase">
+                    Tipo de Transação
+                  </FieldLabel>
+
+                  <div
+                    role="radiogroup"
+                    aria-labelledby="label-transaction-type"
+                    className="bg-background flex justify-between gap-1 overflow-hidden rounded-lg p-1"
+                  >
+                    {TRANSACTION_TYPE_OPTIONS.map((item) => {
+                      const isSelected = field.value === item.value;
+                      const style = TRANSACTION_STYLES[item.value];
+                      const inputId = `field-type-${item.value.toLowerCase()}`;
+
+                      return (
+                        <label
+                          key={item.value}
+                          htmlFor={inputId}
+                          className={`/* Acessibilidade de Foco via Teclado */ has-focus-visible:ring-ring has-focus-visible:ring-offset-background relative flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-sm border px-2 py-1 text-sm font-semibold transition-all select-none has-focus-visible:ring-2 has-focus-visible:ring-offset-2 ${
+                            isSelected
+                              ? `${style?.activeBorder ?? "border-primary"} ${style?.activeBg ?? "bg-primary/10"} ${style?.activeText ?? "text-primary"}`
+                              : "text-muted-foreground hover:bg-muted/50 border-transparent"
+                          }`}
+                        >
+                          <span
+                            aria-hidden="true"
+                            className={`block h-2 w-2 rounded-full transition-colors ${
+                              isSelected ? (style?.dot ?? "bg-primary") : "bg-muted-foreground/40"
+                            }`}
+                          />
+
+                          <span>{item.label}</span>
+
+                          <Input
+                            type="radio"
+                            id={inputId}
+                            name={field.name}
+                            value={item.value}
+                            checked={isSelected}
+                            onChange={() => field.onChange(item.value)}
+                            className="sr-only"
+                            aria-checked={isSelected}
+                          />
+                        </label>
+                      );
+                    })}
+                  </div>
+
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </FieldContent>
+              </Field>
+            )}
+          />
+
           <Controller
             name="name"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field orientation="responsive">
                 <FieldContent>
-                  <FieldLabel htmlFor="field-name">Nome</FieldLabel>
-                  <Input id="field-name" placeholder="Digite seu nome" {...field} />
+                  <FieldLabel htmlFor="field-name" className="text-xs font-bold">
+                    Nome / Descrição
+                  </FieldLabel>
+                  <Input id="field-name" placeholder="Digite a descrição" {...field} />
 
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </FieldContent>
@@ -138,7 +223,9 @@ const UpsertTransactionDialog = ({
             render={({ field, fieldState }) => (
               <Field orientation="responsive">
                 <FieldContent>
-                  <FieldLabel htmlFor="field-amount">Valor</FieldLabel>
+                  <FieldLabel htmlFor="field-amount" className="text-xs font-bold">
+                    Valor
+                  </FieldLabel>
                   <InputMaskMoney
                     id="field-amount"
                     placeholder="R$ 0,00"
@@ -155,103 +242,81 @@ const UpsertTransactionDialog = ({
             )}
           />
 
-          <Controller
-            name="type"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field className="w-full">
-                <FieldContent className="w-full">
-                  <FieldLabel htmlFor="field-type">Tipo</FieldLabel>
+          <div className="grid grid-cols-2 gap-2">
+            <Controller
+              name="category"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field className="w-full">
+                  <FieldContent className="w-full">
+                    <FieldLabel htmlFor="field-category" className="text-xs font-bold">
+                      Categoria
+                    </FieldLabel>
 
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger id="field-type" className="w-full">
-                      <SelectValue placeholder="Selecione o tipo" />
-                    </SelectTrigger>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger id="field-category" className="w-full">
+                        <SelectValue placeholder="Selecione a categoria" />
+                      </SelectTrigger>
 
-                    <SelectContent className="bg-background z-60 w-full">
-                      <SelectGroup>
-                        {TRANSACTION_TYPE_OPTIONS.map((item) => (
-                          <SelectItem key={item.value} value={item.value}>
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                      <SelectContent className="bg-background z-60 w-full">
+                        <SelectGroup>
+                          {TRANSACTION_CATEGORY_OPTIONS.map((item) => (
+                            <SelectItem key={item.value} value={item.value}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
 
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </FieldContent>
-              </Field>
-            )}
-          />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </FieldContent>
+                </Field>
+              )}
+            />
 
-          <Controller
-            name="category"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field className="w-full">
-                <FieldContent className="w-full">
-                  <FieldLabel htmlFor="field-category">Categoria</FieldLabel>
+            <Controller
+              name="paymentMethod"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field className="w-full">
+                  <FieldContent className="w-full">
+                    <FieldLabel htmlFor="field-payment-method" className="text-xs font-bold">
+                      Método de Pagamento
+                    </FieldLabel>
 
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger id="field-category" className="w-full">
-                      <SelectValue placeholder="Selecione a categoria" />
-                    </SelectTrigger>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger id="field-payment-method" className="w-full">
+                        <SelectValue placeholder="Selecione o método de pagamento" />
+                      </SelectTrigger>
 
-                    <SelectContent className="bg-background z-60 w-full">
-                      <SelectGroup>
-                        {TRANSACTION_CATEGORY_OPTIONS.map((item) => (
-                          <SelectItem key={item.value} value={item.value}>
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                      <SelectContent className="bg-background z-60 w-full">
+                        <SelectGroup>
+                          {PAYMENT_METHOD_OPTIONS.map((item) => (
+                            <SelectItem key={item.value} value={item.value}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
 
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </FieldContent>
-              </Field>
-            )}
-          />
-
-          <Controller
-            name="paymentMethod"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field className="w-full">
-                <FieldContent className="w-full">
-                  <FieldLabel htmlFor="field-payment-method">Método de Pagamento</FieldLabel>
-
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger id="field-payment-method" className="w-full">
-                      <SelectValue placeholder="Selecione o método de pagamento" />
-                    </SelectTrigger>
-
-                    <SelectContent className="bg-background z-60 w-full">
-                      <SelectGroup>
-                        {PAYMENT_METHOD_OPTIONS.map((item) => (
-                          <SelectItem key={item.value} value={item.value}>
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </FieldContent>
-              </Field>
-            )}
-          />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </FieldContent>
+                </Field>
+              )}
+            />
+          </div>
 
           <Controller
             name="date"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field className="bg-background z-60 w-full">
-                <FieldContent className="bg-background z-60 w-full">
-                  <FieldLabel htmlFor="field-date">Data</FieldLabel>
+              <Field className="z-60 w-full">
+                <FieldContent className="z-60 w-full">
+                  <FieldLabel htmlFor="field-date" className="text-xs font-bold">
+                    Data da Transação
+                  </FieldLabel>
 
                   <DatePicker date={field.value} onDateChange={field.onChange} />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -260,11 +325,12 @@ const UpsertTransactionDialog = ({
             )}
           />
 
-          <DialogFooter>
+          <DialogFooter className="border-t py-6">
             <DialogClose asChild>
               <Button
                 type="button"
-                className="cursor-pointer bg-slate-200/20 transition-colors duration-200 hover:bg-slate-200/30"
+                variant={"outline"}
+                className="cursor-pointer rounded-md transition-colors duration-200"
               >
                 Cancelar
               </Button>
@@ -272,9 +338,10 @@ const UpsertTransactionDialog = ({
 
             <Button
               type="submit"
-              className="bg-primary hover:bg-primary/90 cursor-pointer transition-colors duration-200"
+              className="bg-primary hover:bg-primary/90 cursor-pointer rounded-md transition-colors duration-200"
             >
-              {isUpdate ? "Editar" : "Adicionar"}
+              {!isUpdate && <PlusIcon size={14} className="-mr-1" />}
+              {isUpdate ? "Editar" : "Adicionar"} Transação
             </Button>
           </DialogFooter>
         </form>

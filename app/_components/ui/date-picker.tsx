@@ -19,7 +19,7 @@ export const DatePicker = ({ date: initialDate, onDateChange }: DatePickerProps)
         <Button
           variant="outline"
           data-empty={!initialDate}
-          className="data-[empty=true]:text-muted-foreground justify-start text-left font-normal"
+          className="data-[empty=true]:text-muted-foreground justify-start rounded-md text-left font-normal"
         >
           <CalendarIcon />
           {initialDate ? (
@@ -29,7 +29,7 @@ export const DatePicker = ({ date: initialDate, onDateChange }: DatePickerProps)
               year: "numeric",
             })
           ) : (
-            <span>Pick a date</span>
+            <span>Selecione uma data</span>
           )}
         </Button>
       </PopoverTrigger>
