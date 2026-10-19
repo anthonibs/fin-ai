@@ -10,7 +10,7 @@ interface ExpensesPerCategoryProps {
 
 const ExpensesPerCategory = ({ expensesPerCategory }: ExpensesPerCategoryProps) => {
   return (
-    <ScrollArea className="col-span-2 h-full overflow-auto rounded-xl border">
+    <ScrollArea className="bg-background-muted col-span-2 h-full overflow-auto rounded-xl border-emerald-900/20 px-5 shadow-sm">
       <CardHeader className="py-6">
         <CardTitle className="font-bold">Gastos por Categoria</CardTitle>
       </CardHeader>
