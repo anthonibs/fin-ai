@@ -44,7 +44,7 @@ const TransactionsPierChart = ({
 }: TransactionsPierChartProps) => {
   const chartData = [
     { type: "Receita", amount: depositsTotal, fill: "#00BA7B" },
-    { type: "Investido", amount: investmentsTotal, fill: "#ffffff" },
+    { type: "Investido", amount: investmentsTotal, fill: "#51a2ff" },
     { type: "Despesa", amount: expensesTotal, fill: "#ff6363" },
   ];
 

@@ -2,34 +2,12 @@ import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/_components/ui/card";
 import { Button } from "@/app/_components/ui/button";
 import Link from "next/link";
-import { Transaction, TransactionType } from "@prisma/client";
-import { formatCurrency } from "@/app/_components/_utils/currency";
+import { Transaction } from "@prisma/client";
+import { getPriceColor, getAmountPrefix } from "@/app/_components/_utils/currency";
 import { TRANSACTION_PAYMENT_METHOD_ICONS } from "@/app/_constants/transactions";
 
 type LastTransactionsProps = {
   lastTransactions: Transaction[];
-};
-
-const getPriceColor = (transaction: Transaction) => {
-  if (transaction.type === TransactionType.EXPENSE) {
-    return "text-rose-600 dark:text-rose-400";
-  }
-  if (transaction.type === TransactionType.DEPOSIT) {
-    return "text-emerald-600 dark:text-emerald-400";
-  }
-  return "text-foreground";
-};
-
-const getAmountPrefix = (transaction: Transaction) => {
-  let prefix = "";
-
-  if (transaction.type === TransactionType.EXPENSE) {
-    prefix = "-";
-  }
-  if (transaction.type === TransactionType.DEPOSIT) {
-    prefix = "+";
-  }
-  return `${prefix} ${formatCurrency(Number(transaction.amount) || 0)}`;
 };
 
 const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
