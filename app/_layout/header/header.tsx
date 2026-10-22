@@ -5,7 +5,7 @@ import Profile from "./profile";
 
 const Header = () => {
   return (
-    <header className="bg-background-muted border-muted-foreground/12 h-16 border-b px-4 py-3">
+    <header className="bg-background-muted border-muted-foreground/12 sticky top-0 z-30 h-16 border-b px-4 py-3">
       <div className="container mx-auto flex items-center justify-between gap-10">
         <div className="flex items-center gap-6">
           <Link href="/" aria-label="Finance AI - Página inicial">

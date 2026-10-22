@@ -29,7 +29,7 @@ export default function RootLayout({
           baseTheme: dark,
         }}
       >
-        <body className={`${mulish.className} dark h-screen overflow-hidden antialiased`}>
+        <body className={`${mulish.className} dark relative h-screen antialiased`}>
           <Header />
 
           <TooltipProvider delayDuration={200}>
