@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import Stripe from "stripe";
 
 export const createStripeCheckoutSession = async () => {
@@ -8,6 +8,13 @@ export const createStripeCheckoutSession = async () => {
 
   if (!userId) {
     throw new Error("User not authenticated");
+  }
+
+  const clerk = await clerkClient();
+  const user = await clerk.users.getUser(userId);
+
+  if (user.publicMetadata?.subscriptionPlan === "premium") {
+    throw new Error("User already has a premium plan");
   }
 
   if (!process.env.STRIPE_SECRET_KEY) {

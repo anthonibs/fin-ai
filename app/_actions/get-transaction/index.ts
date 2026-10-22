@@ -4,14 +4,26 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 
 const MAX_FREE_MONTHLY_TRANSACTIONS = 10;
 
-export const getTransactionMonthTransactions = async (params: {
-  userId: string;
-}): Promise<{ transactionsCount: number }> => {
+export const getTransactionMonthTransactions = async (): Promise<{
+  transactionsCount: number;
+}> => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
+
   const service = new TransactionMonthTransactionsService(db);
-  return service.execute(params.userId);
+  return service.execute(userId);
 };
 
-export const hasUserPremiumPlan = async (userId: string): Promise<boolean> => {
+export const hasUserPremiumPlan = async (): Promise<boolean> => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
+
   const clerk = await clerkClient();
   const user = await clerk.users.getUser(userId);
 
@@ -19,31 +31,23 @@ export const hasUserPremiumPlan = async (userId: string): Promise<boolean> => {
 };
 
 export const canUserAddTransaction = async (): Promise<boolean> => {
-  const { userId } = await auth();
-
-  if (!userId) {
-    throw new Error("User not authenticated");
-  }
-
-  if (await hasUserPremiumPlan(userId)) {
+  if (await hasUserPremiumPlan()) {
     return true;
   }
 
-  const { transactionsCount } = await getTransactionMonthTransactions({ userId });
+  const { transactionsCount } = await getTransactionMonthTransactions();
 
   return transactionsCount < MAX_FREE_MONTHLY_TRANSACTIONS;
 };
 
-export const getTransactionQuota = async (
-  userId: string
-): Promise<{
+export const getTransactionQuota = async (): Promise<{
   transactionsCount: number;
   hasPremiumPlan: boolean;
   canUserAddTransaction: boolean;
 }> => {
   const [{ transactionsCount }, hasPremiumPlan] = await Promise.all([
-    getTransactionMonthTransactions({ userId }),
-    hasUserPremiumPlan(userId),
+    getTransactionMonthTransactions(),
+    hasUserPremiumPlan(),
   ]);
 
   return {

@@ -33,7 +33,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 
   const [{ transactionsCount, hasPremiumPlan, canUserAddTransaction }, dashboardData] =
     await Promise.all([
-      getTransactionQuota(userId),
+      getTransactionQuota(),
       getDashboard({
         userId,
         month: currentMonth,

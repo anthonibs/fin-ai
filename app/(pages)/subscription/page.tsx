@@ -30,7 +30,7 @@ const SubscriptionPage = async () => {
 
   const [user, { transactionsCount: currentMonthTransactionsCount }] = await Promise.all([
     clerkClient().then((clerk) => clerk.users.getUser(userId)),
-    getTransactionMonthTransactions({ userId }),
+    getTransactionMonthTransactions(),
   ]);
 
   const hasPremiumPlan = user?.publicMetadata?.subscriptionPlan === "premium";
