@@ -20,6 +20,7 @@ const AcquirePlanButton = ({ hasPlan, text }: AcquirePlanButtonProps) => {
 
   const handleAcquirePlanClick = () => {
     startTransition(async () => {
+      console.log("Iniciando checkout do Stripe...");
       try {
         const { url } = await createStripeCheckoutSession();
 

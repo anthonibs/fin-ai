@@ -22,16 +22,18 @@ export const createStripeCheckoutSession = async () => {
     apiVersion: "2026-09-30.endive",
   });
 
-  const appUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL;
+  const rawAppUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL;
 
-  if (!appUrl) {
+  if (!rawAppUrl) {
     throw new Error("App URL is not configured");
   }
 
+  const appUrl = rawAppUrl.replace(/\/+$/, "");
+
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
-    success_url: appUrl,
-    cancel_url: appUrl,
+    success_url: `${appUrl}/`,
+    cancel_url: `${appUrl}/subscription`,
     metadata: {
       clerk_user_id: userId,
     },
