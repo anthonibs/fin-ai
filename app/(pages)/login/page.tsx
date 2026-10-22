@@ -1,16 +1,11 @@
 import Image from "next/image";
 import { LogInIcon } from "lucide-react";
 import { SignInButton } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
+import { redirectIfAuthenticated } from "@/app/_lib/auth";
 import { Button } from "@/app/_components/ui/button";
 
 const LoginPage = async () => {
-  const { userId } = await auth();
-
-  if (userId) {
-    return redirect("/");
-  }
+  await redirectIfAuthenticated();
 
   return (
     <section className="grid h-full w-full grid-cols-2">

@@ -1,17 +1,12 @@
 import { transactionColumns } from "./_columns";
-import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
 import AddTransactionButton from "@/app/_components/shared/add-transaction-button";
 import { DataTable } from "@/app/_components/ui/data-table";
 import { db } from "@/app/_lib/prisma";
+import { requireAuth } from "@/app/_lib/auth";
 import { canUserAddTransaction } from "@/app/_actions/get-transaction";
 
 const TransactionsPage = async () => {
-  const { userId } = await auth();
-
-  if (!userId) {
-    redirect("/login");
-  }
+  const userId = await requireAuth();
 
   const transactionsRaw = await db.transaction.findMany({
     where: {

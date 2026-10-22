@@ -1,6 +1,6 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { isMatch } from "date-fns";
+import { requireAuth } from "@/app/_lib/auth";
 import { getDashboard } from "@/app/_actions/get-dashboard";
 import SummaryCards from "./_components/summary-cards";
 import TimeSelect from "./_components/time-select";
@@ -19,11 +19,7 @@ type DashboardPageProps = {
 };
 
 const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return redirect("/login");
-  }
+  const userId = await requireAuth();
 
   const resolvedSearchParams = await searchParams;
   const currentMonth = resolvedSearchParams.month;

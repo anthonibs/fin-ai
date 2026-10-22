@@ -1,11 +1,11 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { clerkClient } from "@clerk/nextjs/server";
 import { CheckIcon, Sparkles, XIcon } from "lucide-react";
 
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 import { Badge } from "@/app/_components/ui/badge";
 import { Progress } from "@/app/_components/ui/progress";
 import { Button } from "@/app/_components/ui/button";
+import { requireAuth } from "@/app/_lib/auth";
 import { getTransactionMonthTransactions } from "@/app/_actions/get-transaction";
 import AcquirePlanButton from "./_components/acquire-plan-button";
 
@@ -26,11 +26,7 @@ const PRO_FEATURES = [
 ];
 
 const SubscriptionPage = async () => {
-  const { userId } = await auth();
-
-  if (!userId) {
-    redirect("/login");
-  }
+  const userId = await requireAuth();
 
   const [user, { transactionsCount: currentMonthTransactionsCount }] = await Promise.all([
     clerkClient().then((clerk) => clerk.users.getUser(userId)),
