@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
 import { PencilIcon } from "lucide-react";
-import { TransactionDTO } from "../_columns";
+import { TransactionColumn } from "../_columns";
 
 import UpsertTransactionDialog from "@/app/_components/shared/upsert-transaction-dialog";
 import { Button } from "@/app/_components/ui/button";
 
 type EditTransactionButtonProps = {
-  transaction: TransactionDTO;
+  transaction: TransactionColumn;
 };
 
 const EditTransactionButton = ({ transaction }: EditTransactionButtonProps) => {

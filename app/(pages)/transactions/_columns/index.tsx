@@ -1,15 +1,14 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { TrashIcon } from "lucide-react";
 import { Prisma, TransactionCategory, TransactionPaymentMethod } from "@prisma/client";
 import { Badge } from "@/app/_components/ui/badge";
-import { Button } from "@/app/_components/ui/button";
 import {
   TRANSACTION_CATEGORY_LABEL,
   TRANSACTION_PAYMENT_METHOD_LABEL,
 } from "@/app/_constants/transactions";
 import EditTransactionButton from "../_components/edit-transaction-button";
+import DeleteTransactionButton from "../_components/delete-transaction-button";
 import { getAmountPrefix, getPriceColor } from "@/app/_components/_utils/currency";
 
 export type TransactionColumn = {
@@ -128,9 +127,10 @@ export const transactionColumns: ColumnDef<TransactionColumn>[] = [
       <div className="flex items-center justify-end gap-1">
         <EditTransactionButton transaction={transaction} />
 
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-red-400">
-          <TrashIcon size={16} />
-        </Button>
+        <DeleteTransactionButton
+          transactionId={transaction.id}
+          transactionName={transaction.name}
+        />
       </div>
     ),
   },
