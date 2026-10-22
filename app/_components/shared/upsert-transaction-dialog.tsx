@@ -33,7 +33,6 @@ import {
 } from "@/app/_constants/transactions";
 import { DatePicker } from "../ui/date-picker";
 import { upsertTransaction } from "@/app/_actions/upsert-transaction";
-import { TransactionDTO } from "@/app/(pages)/transactions/_columns";
 import { PlusIcon } from "lucide-react";
 
 const TRANSACTION_STYLES: Record<
@@ -90,7 +89,7 @@ type FormData = z.infer<typeof formSchema>;
 type UpsertTransactionDialogProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  defaultValues?: TransactionDTO;
+  defaultValues?: Partial<FormData>;
   transactionId?: string;
 };
 
