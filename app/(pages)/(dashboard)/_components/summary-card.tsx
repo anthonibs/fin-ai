@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 
 type SummaryCardProps = {
@@ -34,4 +33,4 @@ const SummaryCard = ({ title, amount, icon, valueColor, labelProps }: SummaryCar
   );
 };
 
-export default memo(SummaryCard);
+export default SummaryCard;

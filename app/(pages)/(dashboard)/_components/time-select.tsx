@@ -29,6 +29,7 @@ const TimeSelect = () => {
   const { push } = useRouter();
   const searchParams = useSearchParams();
   const currentMonthParam = searchParams.get("month");
+  const currentYearParam = searchParams.get("year");
 
   const availableMonths = useMemo(() => {
     const currentDate = new Date();
@@ -43,19 +44,25 @@ const TimeSelect = () => {
 
       options.push({
         label: `${MONTH_NAMES[monthIndex]} de ${year}`,
-        value: monthNumber,
+        value: `${year}-${monthNumber}`,
       });
     }
 
     return options;
   }, []);
 
+  const selectedValue =
+    currentMonthParam && currentYearParam
+      ? `${currentYearParam}-${currentMonthParam.padStart(2, "0")}`
+      : (availableMonths[0]?.value ?? "");
+
   const handleMonthChange = (value: string) => {
-    push(`?month=${value}`);
+    const [year, month] = value.split("-");
+    push(`?month=${month}&year=${year}`);
   };
 
   return (
-    <Select onValueChange={handleMonthChange} value={currentMonthParam ?? ""}>
+    <Select onValueChange={handleMonthChange} value={selectedValue}>
       <SelectTrigger className="w-48 rounded-md border">
         <SelectValue placeholder="Selecione um mês" />
       </SelectTrigger>

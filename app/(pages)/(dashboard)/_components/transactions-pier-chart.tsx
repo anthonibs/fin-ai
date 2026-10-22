@@ -30,6 +30,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 type TransactionsPierChartProps = {
+  month: string;
   depositsTotal: number;
   investmentsTotal: number;
   expensesTotal: number;
@@ -37,11 +38,16 @@ type TransactionsPierChartProps = {
 };
 
 const TransactionsPierChart = ({
+  month,
   depositsTotal,
   investmentsTotal,
   expensesTotal,
   typesPercentage,
 }: TransactionsPierChartProps) => {
+  const monthLabel = new Date(2000, Number(month) - 1, 1).toLocaleDateString("pt-BR", {
+    month: "long",
+  });
+
   const chartData = [
     { type: "Receita", amount: depositsTotal, fill: "#00BA7B" },
     { type: "Investido", amount: investmentsTotal, fill: "#51a2ff" },
@@ -93,9 +99,7 @@ const TransactionsPierChart = ({
           <div className="absolute top-1/2 left-1/2 flex w-15 -translate-x-1/2 -translate-y-1/2 transform flex-col items-center gap-1">
             <span className="text-muted-foreground text-xs">Balanço</span>
             <span className="text-foreground font-mono text-sm font-bold capitalize">
-              {new Date().toLocaleDateString("pt-BR", {
-                month: "long",
-              })}
+              {monthLabel}
             </span>
           </div>
         </ChartContainer>

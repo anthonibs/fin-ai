@@ -35,9 +35,7 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
                 <div>
                   <p className="text-md font-bold">{transaction.name}</p>
                   <p className="text-muted-foreground text-sm">
-                    {Intl.DateTimeFormat("pt-BR", { dateStyle: "long" }).format(
-                      transaction.createdAt
-                    )}
+                    {Intl.DateTimeFormat("pt-BR", { dateStyle: "long" }).format(transaction.date)}
                   </p>
                 </div>
               </div>

@@ -7,16 +7,14 @@ import TimeSelect from "./_components/time-select";
 import LastTransactions from "./_components/last-transactions";
 import TransactionsPierChart from "./_components/transactions-pier-chart";
 import ExpensesPerCategory from "./_components/expenses-per-category";
-import {
-  canUserAddTransaction,
-  getTransactionMonthTransactions,
-} from "@/app/_actions/get-transaction";
+import { getTransactionQuota } from "@/app/_actions/get-transaction";
 import AiReportButton from "./_components/ai-report-button";
 import AddTransactionButton from "@/app/_components/shared/add-transaction-button";
 
 type DashboardPageProps = {
   searchParams: Promise<{
     month?: string;
+    year?: string;
   }>;
 };
 
@@ -29,23 +27,23 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 
   const resolvedSearchParams = await searchParams;
   const currentMonth = resolvedSearchParams.month;
+  const currentYear = resolvedSearchParams.year;
   const monthIsInvalid = !currentMonth || !isMatch(currentMonth, "MM");
+  const yearIsInvalid = currentYear !== undefined && !isMatch(currentYear, "yyyy");
 
-  if (monthIsInvalid) {
+  if (monthIsInvalid || yearIsInvalid) {
     return redirect(`/?month=${new Date().getMonth() + 1}`);
   }
 
-  const [dashboardData, { transactionsCount }] = await Promise.all([
-    getDashboard({
-      userId,
-      month: currentMonth,
-    }),
-    getTransactionMonthTransactions({
-      userId,
-    }),
-  ]);
-
-  const userCanAddTransaction = await canUserAddTransaction();
+  const [{ transactionsCount, hasPremiumPlan, canUserAddTransaction }, dashboardData] =
+    await Promise.all([
+      getTransactionQuota(userId),
+      getDashboard({
+        userId,
+        month: currentMonth,
+        year: currentYear,
+      }),
+    ]);
 
   return (
     <section className="flex h-full flex-1 flex-col space-y-6 overflow-hidden">
@@ -60,8 +58,8 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 
         <div className="flex gap-3">
           <TimeSelect />
-          <AiReportButton month={currentMonth} hasPremiumPlan={userCanAddTransaction} />
-          <AddTransactionButton userCanAddTransaction={!userCanAddTransaction} />
+          <AiReportButton month={currentMonth} hasPremiumPlan={hasPremiumPlan} />
+          <AddTransactionButton userCanAddTransaction={canUserAddTransaction} />
         </div>
       </header>
 
@@ -75,6 +73,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
           <div className="grid h-full grid-cols-1 gap-6 overflow-hidden pr-1 md:grid-cols-3">
             <div className="h-full md:col-span-1">
               <TransactionsPierChart
+                month={currentMonth}
                 depositsTotal={dashboardData.depositsTotal}
                 investmentsTotal={dashboardData.investmentsTotal}
                 expensesTotal={dashboardData.expensesTotal}

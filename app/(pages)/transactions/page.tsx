@@ -31,7 +31,7 @@ const TransactionsPage = async () => {
           </p>
         </div>
 
-        <AddTransactionButton userCanAddTransaction={!userCanAddTransaction} />
+        <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
       </header>
 
       <div className="flex flex-col pb-8">
