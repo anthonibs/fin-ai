@@ -24,12 +24,17 @@ const TransactionsPage = async () => {
   return (
     <section className="h-full space-y-6 p-6">
       <header className="flex w-full items-center justify-between">
-        <h1 className="text-2xl font-bold">Transações</h1>
+        <div>
+          <h1 className="text-3xl font-bold">Transações</h1>
+          <p className="text-muted-foreground mt-1 text-sm">
+            Gerencie e audite todos os fluxos financeiros registrados na sua conta.
+          </p>
+        </div>
 
         <AddTransactionButton userCanAddTransaction={!userCanAddTransaction} />
       </header>
 
-      <div className="flex h-[calc(100vh-200px)] flex-col">
+      <div className="flex flex-col pb-8">
         <DataTable
           columns={transactionColumns}
           data={JSON.parse(JSON.stringify(transactionsRaw))}

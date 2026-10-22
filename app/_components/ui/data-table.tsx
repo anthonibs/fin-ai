@@ -24,6 +24,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Input } from "./input";
 import { Button } from "./button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
+import { Field, FieldContent, FieldLabel } from "./field";
+import { DatePicker } from "./date-picker";
 
 interface CategoryOption {
   label: string;
@@ -136,8 +138,8 @@ export function DataTable<TData, TValue>({
   const hasActiveFilters = columnFilters.length > 0;
 
   return (
-    <div className="flex h-full w-full flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex h-full w-full flex-col gap-5">
+      <div className="bg-card border-muted-foreground/12 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-4">
         <div className="flex flex-1 flex-wrap items-center gap-3">
           <div className="relative min-w-60 flex-1 sm:max-w-xs">
             <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
@@ -156,7 +158,7 @@ export function DataTable<TData, TValue>({
                 table.getColumn("category")?.setFilterValue(value === "ALL" ? undefined : value)
               }
             >
-              <SelectTrigger className="w-45">
+              <SelectTrigger className="text-muted-foreground w-45">
                 <SelectValue placeholder="Categoria" />
               </SelectTrigger>
               <SelectContent>
@@ -172,20 +174,26 @@ export function DataTable<TData, TValue>({
 
           {table.getColumn("date") && (
             <div className="flex items-center gap-2">
-              <Input
-                type="date"
-                aria-label="Data inicial"
-                value={dateRange.from}
-                onChange={(e) => handleDateChange("from", e.target.value)}
-                className="w-36.25 text-xs"
+              <DatePicker
+                date={
+                  dateRange.from
+                    ? new Date(`${dateRange.from}T00:00:00`)
+                    : (undefined as unknown as Date)
+                }
+                onDateChange={(date) =>
+                  handleDateChange("from", date ? date.toLocaleDateString("en-CA") : "")
+                }
               />
               <span className="text-muted-foreground text-xs">até</span>
-              <Input
-                type="date"
-                aria-label="Data final"
-                value={dateRange.to}
-                onChange={(e) => handleDateChange("to", e.target.value)}
-                className="w-36.25 text-xs"
+              <DatePicker
+                date={
+                  dateRange.to
+                    ? new Date(`${dateRange.to}T00:00:00`)
+                    : (undefined as unknown as Date)
+                }
+                onDateChange={(date) =>
+                  handleDateChange("to", date ? date.toLocaleDateString("en-CA") : "")
+                }
               />
             </div>
           )}
@@ -206,16 +214,16 @@ export function DataTable<TData, TValue>({
           variant="outline"
           onClick={handleExportCSV}
           disabled={table.getFilteredRowModel().rows.length === 0}
-          className="cursor-pointer gap-2"
+          className="cursor-pointer gap-2 rounded-sm"
         >
           <Download className="h-4 w-4" />
           Exportar CSV
         </Button>
       </div>
 
-      <div className="border-muted-foreground/12 bg-card/40 flex-1 overflow-y-auto rounded-lg border">
+      <div className="bg-card border-muted-foreground/12 h-full flex-1 overflow-hidden rounded-lg border shadow-2xl">
         <Table>
-          <TableHeader className="bg-background/95 sticky top-0 z-20 backdrop-blur-sm">
+          <TableHeader className="bg-background/90">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
@@ -224,7 +232,7 @@ export function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-muted-foreground px-6 py-4 text-xs font-semibold tracking-wider uppercase"
+                    className="text-muted-foreground px-6 py-4 text-xs font-extrabold tracking-wider uppercase"
                   >
                     {header.isPlaceholder
                       ? null
@@ -262,79 +270,80 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 px-1 py-2">
-        <div className="text-muted-foreground text-xs">
-          Mostrando{" "}
-          <span className="text-foreground font-medium">{table.getRowModel().rows.length}</span> de{" "}
-          <span className="text-foreground font-medium">
-            {table.getFilteredRowModel().rows.length}
-          </span>{" "}
-          transações
-        </div>
-
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground text-xs">Linhas por página</span>
-            <Select
-              value={`${table.getState().pagination.pageSize}`}
-              onValueChange={(value) => table.setPageSize(Number(value))}
-            >
-              <SelectTrigger className="h-8 w-17.5 text-xs">
-                <SelectValue placeholder={table.getState().pagination.pageSize} />
-              </SelectTrigger>
-              <SelectContent side="top">
-                {[10, 20, 30, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <div className="border-muted-foreground/12 flex flex-wrap items-center justify-between gap-4 border-t px-6 py-4">
+          <div className="text-muted-foreground text-xs">
+            Mostrando{" "}
+            <span className="text-foreground font-medium">{table.getRowModel().rows.length}</span>{" "}
+            de{" "}
+            <span className="text-foreground font-medium">
+              {table.getFilteredRowModel().rows.length}
+            </span>{" "}
+            transações
           </div>
 
-          <div className="text-muted-foreground text-xs font-medium">
-            Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount() || 1}
-          </div>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground text-xs">Linhas por página</span>
+              <Select
+                value={`${table.getState().pagination.pageSize}`}
+                onValueChange={(value) => table.setPageSize(Number(value))}
+              >
+                <SelectTrigger className="h-8 w-17.5 text-xs">
+                  <SelectValue placeholder={table.getState().pagination.pageSize} />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="flex items-center gap-1.5">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <ChevronsLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <ChevronsRight className="h-4 w-4" />
-            </Button>
+            <div className="text-muted-foreground text-xs font-medium">
+              Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount() || 1}
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronsLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+              >
+                <ChevronsRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
